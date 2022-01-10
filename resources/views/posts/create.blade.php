@@ -17,7 +17,7 @@
                 <form method="POST" action={{ route('posts.store') }}>
                     @csrf
                     <div class="col-md-12">
-                        <label for="title" class="form-label">Title</label>
+                        <label for="title" class="form-label"><strong>Title</strong></label>
                         <input type="text" name="title" class="form-control" placeholder="Title goes here">
                     </div>
 
@@ -29,9 +29,23 @@
                     <div class="col-md-12">
                         <label for="body" class="form-label">Body</label>
                         <textarea id="editor" name="body" class="form-control" placeholder="Post content goes here"></textarea>
-
                     </div>
 
+                    <div class="col-md-12">
+                        <label for="categories" class="form-label">Categories</label>
+                        {{-- We keep this hidden so only the Tagin rendered field displays --}}
+                        <input class="form-control categories-tagin" name="categories" hidden>
+                        <small id="categoriesHelp" class="form-text text-muted">Each new category is comma (,) seperated eg. category1,category2,etc. </small>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="tags" class="form-label">Tags</label>
+                        {{-- We keep this hidden so only the Tagin rendered field displays --}}
+                        <input class="form-control tags-tagin" name="tags" hidden>
+                        <small id="tagsHelp" class="form-text text-muted">Each new tag is comma (,) seperated eg. tag1,tag2,etc. </small>
+                    </div>
+
+                    {{-- Todo: Change this to a drop down --}}
                     <div class="col-md-12">
                         <label for="user_id" class="form-label">User</label>
                         <input class="form-control" name="user_id" value="1">
@@ -54,5 +68,27 @@
             @include('includes.footer')
 
         </div>
+
+        {{-- CKEdtior JS --}}
+        <script>
+            ClassicEditor
+                .create( document.querySelector( '#editor' ) )
+                .then( editor => {
+                    editor.editing.view.change(writer=>{
+                        writer.setStyle('height', '400px', editor.editing.view.document.getRoot());
+                    });
+                } )
+                .catch( error => {
+                    console.error( error );
+                } );
+        </script>
+
+        {{-- Bootstrap Tagin --}}
+        <script src="https://unpkg.com/tagin@2.0.2/dist/tagin.min.js"></script>
+
+        <script>
+            new Tagin(document.querySelector('.categories-tagin'))
+            new Tagin(document.querySelector('.tags-tagin'))
+        </script>
 
 @endsection

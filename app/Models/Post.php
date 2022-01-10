@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Mews\Purifier\Casts\CleanHtml;
 use Illuminate\Database\Eloquent\Model;
+use Mews\Purifier\Casts\CleanHtmlInput;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
@@ -21,6 +22,7 @@ class Post extends Model
         'title',
         'slug',
         'body',
+        'is_published',
         'published_at'
     ];
 
@@ -31,6 +33,8 @@ class Post extends Model
      */
     protected $casts = [
         'published_at' => 'datetime',
+        'title' => CleanHtmlInput::class,
+        'body'  => CleanHtml::class
     ];
 
     /**
@@ -41,6 +45,37 @@ class Post extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Return the post's categories
+     */
+    public function categories()
+    {
+        return $this->hasManyThrough(
+            Category::class,
+            PostCategory::class,
+            'post_id',
+            'id',
+            'id',
+            'category_id'
+        );
+
+    }
+
+    /**
+     * Return the post's tags
+     */
+    public function tags()
+    {
+        return $this->hasManyThrough(
+            Tag::class,
+            PostTag::class,
+            'post_id',
+            'id',
+            'id',
+            'tag_id'
+        );
     }
 
     /**

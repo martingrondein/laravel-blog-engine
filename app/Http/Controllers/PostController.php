@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Http\Request;
+use App\Http\Requests\PostStoreRequest;
+use App\Http\Requests\PostUpdateRequest;
 use Illuminate\Support\Facades\View;
 
 class PostController extends Controller
@@ -18,7 +19,12 @@ class PostController extends Controller
 
         $posts = Post::all()->sortByDesc('updated_at');
 
-        return View::make('posts.index',compact('posts'));
+        foreach ($posts as $post) {
+            $category = Post::first()->categories;
+            $tag = Post::first()->tags;
+        }
+
+        return View::make('posts.index',compact('posts','category','tag'));
 
     }
 
@@ -38,14 +44,8 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostStoreRequest $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'body' => 'required',
-            'user_id' => 'required',
-        ]);
-
         Post::create($request->all());
 
         return redirect()->route('posts.index')
@@ -82,14 +82,8 @@ class PostController extends Controller
      * @param  \App\Models\Posts  $posts
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostUpdateRequest $request, Post $post)
     {
-        $request->validate([
-            'title' => 'required',
-            'body' => 'required',
-            'user_id' => 'required',
-        ]);
-
         $post->update($request->all());
 
         return redirect()->route('posts.index')

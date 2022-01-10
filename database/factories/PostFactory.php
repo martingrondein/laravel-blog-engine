@@ -17,21 +17,22 @@ class PostFactory extends Factory
     public function definition()
     {
         $title = $this->faker->sentence;
-        
+
         $body = collect($this->faker->paragraphs(rand(5, 15)))
-        ->map(function($item){
-            return "<p>$item</p>";
-        })->toArray();
+                ->map(function($item){
+                    return "<p>$item</p>";
+                })->toArray();
 
         $body = implode($body);
 
         return [
             'user_id' => User::all()->random()->id,
-            'title' => $title,            
+            'title' => $title,
             'slug' => Str::slug($title),
             'body' => $body,
+            'is_published' => $this->faker->boolean(),
             'published_at' => Carbon::now()
         ];
     }
-    
+
 }

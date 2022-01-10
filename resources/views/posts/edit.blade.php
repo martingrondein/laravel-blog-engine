@@ -30,7 +30,6 @@
                     <div class="col-md-12">
                         <label for="body" class="form-label">Body</label>
                         <textarea id="editor" name="body" class="form-control" placeholder="Post content goes here">{{ $post->body }}</textarea>
-
                     </div>
 
                     <div class="col-md-12">
@@ -48,5 +47,19 @@
             @include('includes.footer')
 
         </div>
+
+        {{-- CKEdtior JS --}}
+        <script>
+            ClassicEditor
+                .create( document.querySelector( '#editor' ) )
+                .then( editor => {
+                    editor.editing.view.change(writer=>{
+                        writer.setStyle('height', '400px', editor.editing.view.document.getRoot());
+                    });
+                } )
+                .catch( error => {
+                    console.error( error );
+                } );
+        </script>
 
 @endsection
